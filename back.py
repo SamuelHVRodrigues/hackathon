@@ -3,6 +3,7 @@ import openai
 from dotenv import load_dotenv, find_dotenv
 import pandas as pd
 import time
+from twilio.rest import Client
 
 app = Flask(__name__)
 
@@ -12,7 +13,8 @@ df = pd.read_csv(r'############# PATH DO ARQUIVO #############')
 # Carregar variáveis de ambiente
 _ = load_dotenv(find_dotenv())
 
-# Cria o client da openai
+# Cria o client da Twilio e da OpenAI
+client_twilio = Client()
 client = openai.Client()
 
 # Passa o arquivo para a openai
@@ -36,18 +38,18 @@ assistant_id = assistant.id # Salva o ID do assistant
 thread = client.beta.threads.create()
 thread_id = thread.id # Salva o ID da thread
 
-# Requisição para a API da OpenAI
-@app.route("/ask", methods=["POST"])
-def ask_openai():
-    data = request.json
-    question = data.get("question", "")
-    
-    if question:
-        # Adiciona mensagem à thread existente
+# Endpoint que receb a mensagem do WhatsApp (Webhook da Twilio)
+@app.route("/whatsapp", methods=["POST"])
+def whatsapp_webhook():
+    incoming_message = request.values.get('Body', '').lower() # Pega a mensagem recebida
+    from_number = request.values.get('From') # Pega o número de quem enviou a mensagem
+
+    if incoming_message:
+        # Adiciona mensagem à thread existente na OpenAI
         message = client.beta.threads.messages.create(
             thread_id=thread_id,
             role='user',
-            content=question
+            content=incoming_message
         )
 
         # Roda a thread
@@ -75,20 +77,27 @@ def ask_openai():
                 print('Tempo de execução excedido. Tente novamente mais tarde.')
                 break
 
-        # Verifica o status para dar o retorno
+        # Verifica o status e envia a resposta de volta para o WhatsApp
         if run.status == 'completed':
             messages = client.beta.threads.messages.list(
                 thread_id = thread_id
             )
-
-            return jsonify({'answer': messages.data[0].content[0].text.value})
+            response_message = messages.data[0].content[0].text.value
         elif run.status == 'in_progress':
-            return jsonify({'answer': 'Erro na execução: O processamento demorou mais do que o esperado.'})
+            response_message = 'Erro na execução: O processamento demorou mais do que o esperado.'
         else:
-            answer = f"Erro na execução: Erro: {run.status}"
-            return jsonify({'answer': answer})
+            response_message = f"Erro na execução: Erro: {run.status}"
+
+        # Envia a resposta de volta ao usuário via Twilio WhatsApp
+        client_twilio.messages.create(
+            body = response_message,
+            from_ = twilio_whatsapp_number,
+            to = from_number
+        )
+
+        return 'Mensagem recebida e processada.', 200
     else:
-        return jsonify({"error": "Nenhuma pergunta fornecida"}), 400
+        return 'Nenhuma pergunta fornecida', 400
 
 if __name__ == "__main__":
     app.run(debug=True)
