@@ -52,7 +52,8 @@ def whatsapp_webhook():
         message = client.beta.threads.messages.create(
             thread_id=thread_id,
             role='user',
-            content=incoming_message
+            content=incoming_message,
+            max_completion_tokens=300
         )
 
         # Roda a thread
