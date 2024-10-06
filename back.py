@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 import openai
 from dotenv import load_dotenv, find_dotenv
 import pandas as pd
@@ -116,6 +116,13 @@ def whatsapp_webhook():
             return 'Falha ao enviar a mensagem.', 500
     else:
         return 'Nenhuma mensagem recebida', 400
+
+# Rota GET para cerregar o arquivo 'index.html'
+@app.route('/', method=["GET"])
+def load_index():
+    # Carrega o arquivo 'index.html'
+    return send_from_directory('index.html')
+
 
 if __name__ == "__main__":
     app.run(debug=True)
