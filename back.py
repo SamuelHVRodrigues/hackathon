@@ -52,8 +52,7 @@ def whatsapp_webhook():
         message = client.beta.threads.messages.create(
             thread_id=thread_id,
             role='user',
-            content=incoming_message,
-            max_completion_tokens=300
+            content=incoming_message
         )
 
         # Roda a thread
@@ -61,6 +60,7 @@ def whatsapp_webhook():
             thread_id = thread_id,
             assistant_id = assistant_id,
             instructions='',
+            max_completion_tokens=300
         )
 
         # Define um timeout de 30 segundos e o tempo de espera entre verificações
