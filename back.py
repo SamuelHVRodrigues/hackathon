@@ -106,6 +106,8 @@ assistant_id = assistant.id # Salva o ID do assistant
 # Cria um dicionário para associar cada número de telefone a uma thread exclusiva
 threads_by_customer = {} # Cada chave será o 'customer_number' e o valor será o 'thread_id'
 
+global messages_to_send
+
 messages_to_send = [{
     'from': 'whatsapp:+55whatsapp_number',
     'to': '000',
