@@ -18,6 +18,7 @@ known_customers = set()
 def upload_customers():
     global customers_df # Usar a variável global para armazenar o DataFrame
     global known_customers # Usar a variável global para verificar os números de telefone que já receberam mensagem
+    global new_customers
 
     # Verificar se um arquivo foi enviado na requisição
     if 'file' not in request.files:
@@ -34,6 +35,8 @@ def upload_customers():
 
             # Identificar os clientes que ainda não receberam mensagem
             new_customers = new_data[~new_data['telefone'].isin(known_customers)]
+
+            # Cria a thread
 
             # Enviar mensagem apenas para os novos clientes
             for index, customer in new_customers.iterrows():
@@ -61,6 +64,8 @@ def upload_customers():
 
             # Atualiza o DataFrame com os novos dados
             customers_df = pd.concat([customers_df, new_data]).drop_duplicates(subset=['telefone'])
+
+            # Fim da thread
 
             return f'Arquivo carregado com sucesso! {len(new_customers)} novos usuários processados.', 200
         
@@ -101,7 +106,11 @@ assistant_id = assistant.id # Salva o ID do assistant
 # Cria um dicionário para associar cada número de telefone a uma thread exclusiva
 threads_by_customer = {} # Cada chave será o 'customer_number' e o valor será o 'thread_id'
 
-
+messages_to_send = [{
+    'from': 'whatsapp:+55whatsapp_number',
+    'to': '000',
+    'body': 'asdsad'
+}]
 
 # Endpoint que recebe a mensagem do WhatsApp
 @app.route("/whatsapp", methods=["POST"])
@@ -168,15 +177,23 @@ def whatsapp_webhook():
             'body': response_message # Mensagem a ser enviada
         }
         # Faz um POST para enviar a mensagem
-        response = requests.post("url_interface_whatsapp", json={"payload": payload})
 
-        # Verifica o sucesso do envio
-        if response.status_code == 200:
-            return 'Mensagem recebida e processada.', 200
-        else:
-            return 'Falha ao enviar a mensagem.', 500
+        messages_to_send.append(payload)
+        # response = requests.post("url_interface_whatsapp", json={"payload": payload})
+
+        # # Verifica o sucesso do envio
+        # if response.status_code == 200:
+        #     return 'Mensagem recebida e processada.', 200
+        # else:
+        #     return 'Falha ao enviar a mensagem.', 500
     else:
         return 'Nenhuma mensagem recebida', 400
+    
+@app.route("/messages_to_send", methods=["GET"])
+def messages_to_send():
+      aux = messages_to_send
+      messages_to_send = []
+      return aux
 
 if __name__ == "__main__":
     app.run(debug=True)
