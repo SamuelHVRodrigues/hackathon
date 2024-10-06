@@ -189,12 +189,12 @@ def whatsapp_webhook():
     else:
         return 'Nenhuma mensagem recebida', 400
     
-@app.route("/messages_to_send", methods=["GET"])
+@app.route("/messages", methods=["GET"])
 def messages_to_send():
       global messages_to_send
       aux = messages_to_send
       messages_to_send = []
-      return aux
+      return jsonify(aux)
 
 if __name__ == "__main__":
     app.run(debug=True)
