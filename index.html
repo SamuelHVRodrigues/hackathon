@@ -61,7 +61,7 @@
   <body>
     <div class="container">
       <h1>Dados do OpenFinance</h1>
-      <form id="upload-form">
+      <form id="upload-form" action="">
         <label for="file-upload">Selecione um arquivo Excel (.xlsx):</label>
         <input
           type="file"
@@ -90,6 +90,8 @@
 
         const formData = new FormData();
         formData.append("file", file);
+
+        alert('Tá chegando')
 
         try {
           const response = await fetch("/upload_customers", {
