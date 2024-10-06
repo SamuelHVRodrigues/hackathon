@@ -30,7 +30,8 @@ assistant = client.beta.assistants.create(
       Horizonte de investimento: Leve em conta o prazo pelo qual o cliente pretende manter o dinheiro investido. Para prazos curtos (até 1 ano), priorize liquidez e segurança. Para prazos médios e longos, considere incluir produtos de maior risco e retorno. \
       Produtos financeiros disponíveis: Utilize a planilha fornecida, que contém dados sobre diversos produtos financeiros (CDB, LCI/LCA, Tesouro Direto, Fundos de Investimento, Ações, etc.). Baseie suas recomendações nessas opções, alinhando com o perfil e os objetivos do cliente. \
       Diversificação e alocação de ativos: Sempre busque uma alocação diversificada, minimizando riscos ao combinar diferentes tipos de ativos (renda fixa, variável, etc.), conforme as características do cliente. \
-      Cenário econômico: Se necessário, contextualize as recomendações de acordo com o cenário econômico atual (inflação, taxa Selic, expectativas do mercado) para justificar suas sugestões de maneira clara e objetiva.",
+      Cenário econômico: Se necessário, contextualize as recomendações de acordo com o cenário econômico atual (inflação, taxa Selic, expectativas do mercado) para justificar suas sugestões de maneira clara e objetiva. \
+      Responda com no máximo 1500 caracteres.",
     tools=[{'type': 'code_interpreter'}],
     tool_resources={'code_interpreter': {'file_ids': [file_id]}},
     model='gpt-4o-mini'
@@ -59,8 +60,7 @@ def whatsapp_webhook():
         run = client.beta.threads.runs.create(
             thread_id = thread_id,
             assistant_id = assistant_id,
-            instructions='',
-            max_completion_tokens=300
+            instructions=''
         )
 
         # Define um timeout de 30 segundos e o tempo de espera entre verificações
