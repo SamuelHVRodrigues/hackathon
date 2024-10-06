@@ -118,7 +118,7 @@ def whatsapp_webhook():
         return 'Nenhuma mensagem recebida', 400
 
 # Rota GET para cerregar o arquivo 'index.html'
-@app.route('/', method=["GET"])
+@app.route('/', methods=["GET"])
 def load_index():
     # Carrega o arquivo 'index.html'
     return send_from_directory('index.html')
