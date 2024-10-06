@@ -10,7 +10,68 @@ app = Flask(__name__)
 # Carregar variáveis de ambiente
 _ = load_dotenv(find_dotenv())
 
-# Cria o client da Twilio e da OpenAI
+# Lista para armazenar os números de telefone que já receberam mensagem
+known_customers = set()
+
+# Rota para receber o arquivo .xlsx com as informações dos clientes
+@app.route('/upload_customers', methods=['POST'])
+def upload_customers():
+    global customers_df # Usar a variável global para armazenar o DataFrame
+    global known_customers # Usar a variável global para verificar os números de telefone que já receberam mensagem
+
+    # Verificar se um arquivo foi enviado na requisição
+    if 'file' not in request.files:
+        return 'Nenhum arquivo enviado.', 400
+    file = request.files['file']
+
+    if file.filename == '':
+        return 'Nenhum arquivo foi selecionado.', 400
+    
+    if file and file.filename.endswith('.xlsx'):
+        try:
+            # Lê o arquivo Excel e carrega um DataFrame
+            new_data = pd.read_excel(file)
+
+            # Identificar os clientes que ainda não receberam mensagem
+            new_customers = new_data[~new_data['telefone'].isin(known_customers)]
+
+            # Enviar mensagem apenas para os novos clientes
+            for index, customer in new_customers.iterrows():
+                customer_number = customer['telefone']
+                customer_name = customer['nome']
+                customer_investment_profile = customer['perfil_investimento']
+
+                # Mensagem personalizada
+                response_message = '############### PERSONALIZAR MENSAGEM ###############'
+
+                # Envia a resposta para o ...
+                payload = {
+                    'from': 'whatsapp:+55whatsapp_number', # Número de origem
+                    'to': customer_number, # Número de destino
+                    'body': response_message # Mensagem a ser enviada
+                }
+
+                # Faz um POST para enviar a mensagem
+                response = requests.post("url_interface_whatsapp", json={"payload": payload})
+
+                if response.status_code == 200:
+                    known_customers.add(customer_number) # Adiciona o número de telefone na lista de clientes que já receberam mensagem
+                else:
+                    print(f"Falha ao enviar mensagem para {customer_number}")
+
+            # Atualiza o DataFrame com os novos dados
+            customers_df = pd.concat([customers_df, new_data]).drop_duplicates(subset=['telefone'])
+
+            return f'Arquivo carregado com sucesso! {len(new_customers)} novos usuários processados.', 200
+        
+        except Exception as e:
+            return f'Erro ao processar o arquivo: {str(e)}', 500
+        
+    else:
+        return 'Formato de arquivo inválido. Envie um arquivo .xlsx', 400
+
+
+# Cria o client da OpenAI
 client = openai.Client()
 
 # Passa o arquivo para a openai
@@ -42,7 +103,7 @@ threads_by_customer = {} # Cada chave será o 'customer_number' e o valor será 
 
 
 
-# Endpoint que receb a mensagem do WhatsApp (Webhook da Twilio)
+# Endpoint que recebe a mensagem do WhatsApp
 @app.route("/whatsapp", methods=["POST"])
 def whatsapp_webhook():
     incoming_message = request.values.get('Body', '').lower() # Pega a mensagem recebida
