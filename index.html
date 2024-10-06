@@ -61,7 +61,7 @@
   <body>
     <div class="container">
       <h1>Dados do OpenFinance</h1>
-      <form id="upload-form" action="">
+      <form id="upload-form" action="/upload_customers", method="POST" enctype="multipart/form-data">
         <label for="file-upload">Selecione um arquivo Excel (.xlsx):</label>
         <input
           type="file"
@@ -70,7 +70,7 @@
           accept=".xlsx"
           required
         />
-        <button type="submit">Enviar</button>
+        <button type="submit" value="Upload">Enviar</button>
       </form>
     </div>
 
