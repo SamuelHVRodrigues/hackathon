@@ -106,11 +106,13 @@ assistant_id = assistant.id # Salva o ID do assistant
 # Cria um dicionário para associar cada número de telefone a uma thread exclusiva
 threads_by_customer = {} # Cada chave será o 'customer_number' e o valor será o 'thread_id'
 
-messages_to_send = [{
+messages_to_send = []
+
+messages_to_send.append({
     'from': 'whatsapp:+55whatsapp_number',
     'to': '000',
     'body': 'asdsad'
-}]
+})
 
 # Endpoint que recebe a mensagem do WhatsApp
 @app.route("/whatsapp", methods=["POST"])
