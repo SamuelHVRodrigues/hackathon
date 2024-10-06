@@ -28,10 +28,10 @@ assistant = client.beta.assistants.create(
       Disponibilidade de capital: Considere o quanto o cliente tem disponível para investir. As recomendações devem respeitar esse valor e distribuir os investimentos de maneira equilibrada entre diferentes produtos. \
       Perfil de investidor: Avalie o perfil de risco do cliente (conservador, moderado ou arrojado). Clientes conservadores devem ser direcionados para opções mais seguras e de baixa volatilidade, enquanto clientes arrojados podem assumir mais risco em busca de maiores retornos. \
       Horizonte de investimento: Leve em conta o prazo pelo qual o cliente pretende manter o dinheiro investido. Para prazos curtos (até 1 ano), priorize liquidez e segurança. Para prazos médios e longos, considere incluir produtos de maior risco e retorno. \
-      Produtos financeiros disponíveis: Utilize a planilha fornecida, que contém dados sobre diversos produtos financeiros (CDB, LCI/LCA, Tesouro Direto, Fundos de Investimento, Ações, etc.). Baseie suas recomendações nessas opções, alinhando com o perfil e os objetivos do cliente. Recomende especificamente os produtos financeiros da base fornecida. \
+      Produtos financeiros disponíveis: Utilize a planilha fornecida, que contém dados sobre produtos financeiros específicos (CDB BANCO VOLKSWAGEN - OUT/2026, LCA BANCO ABC - JAN/2025, Tesouro IPCA+ 2025, etc.). As recomendações devem ser baseadas exclusivamente nesses produtos, mencionando o nome do produto, rentabilidade, vencimento e aplicação mínima. Evite recomendar categorias genéricas como CDB ou Tesouro Direto; recomende sempre produtos específicos com suas características detalhadas. \
       Diversificação e alocação de ativos: Sempre busque uma alocação diversificada, minimizando riscos ao combinar diferentes tipos de ativos (renda fixa, variável, etc.), conforme as características do cliente. \
       Cenário econômico: Se necessário, contextualize as recomendações de acordo com o cenário econômico atual (inflação, taxa Selic, expectativas do mercado) para justificar suas sugestões de maneira clara e objetiva. \
-      Responda com no máximo 1500 caracteres.",
+      Formato da resposta: Responda sempre com o nome do produto, rentabilidade, vencimento, e aplicação mínima. A resposta deve ser clara, específica e respeitar o limite de 1500 caracteres. O canal de comunicação será o WhatsApp.",
     tools=[{'type': 'code_interpreter'}],
     tool_resources={'code_interpreter': {'file_ids': [file_id]}},
     model='gpt-4o-mini'
