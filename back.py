@@ -8,7 +8,7 @@ from twilio.rest import Client
 app = Flask(__name__)
 
 # Carregar a base de dados que foi tratada em outro arquivo
-df = pd.read_csv(r'############# PATH DO ARQUIVO #############')
+# df = pd.read_csv(r'############# PATH DO ARQUIVO #############')
 
 # Carregar variáveis de ambiente
 _ = load_dotenv(find_dotenv())
@@ -18,18 +18,18 @@ client_twilio = Client()
 client = openai.Client()
 
 # Passa o arquivo para a openai
-file = client.files.create(
-    file = open(r'############# PATH DO ARQUIVO #############', 'rb'),
-    purpose='assistants'
-)
-file_id = file.id # Salva o ID do arquivo
+#file = client.files.create(
+#    file = open(r'############# PATH DO ARQUIVO #############', 'rb'),
+#    purpose='assistants'
+#)
+#file_id = file.id # Salva o ID do arquivo
 
 # Cria o assistant
 assistant = client.beta.assistants.create(
     name='Consultor de Produtos Financeiros',
-    instructions="############# INSERIR INSTRUÇÕES #############",
+    instructions="Consultor de produtos financeiros do mercado brasileiro",
     tools=[{'type': 'code_interpreter'}],
-    tool_resources={'code_interpreter': {'file_ids': [file_id]}},
+    tool_resources={},
     model='gpt-4o-mini'
 )
 assistant_id = assistant.id # Salva o ID do assistant
@@ -91,7 +91,7 @@ def whatsapp_webhook():
         # Envia a resposta de volta ao usuário via Twilio WhatsApp
         client_twilio.messages.create(
             body = response_message,
-            from_ = twilio_whatsapp_number,
+            from_ = 'whatsapp:+14155238886',
             to = from_number
         )
 
