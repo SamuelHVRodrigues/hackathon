@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 import openai
 from dotenv import load_dotenv, find_dotenv
 import pandas as pd
@@ -197,6 +197,13 @@ def get_messages_to_send():
       aux = messages_to_send
       messages_to_send = []
       return jsonify(aux)
+
+# Rota GET para cerregar o arquivo 'index.html'
+@app.route('/', methods=["GET"])
+def load_index():
+    # Carrega o arquivo 'index.html'
+    return send_from_directory('', 'index.html')
+
 
 if __name__ == "__main__":
     app.run(debug=True)
