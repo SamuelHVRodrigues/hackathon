@@ -37,17 +37,26 @@ assistant = client.beta.assistants.create(
 )
 assistant_id = assistant.id # Salva o ID do assistant
 
-# Cria uma thread
-thread = client.beta.threads.create()
-thread_id = thread.id # Salva o ID da thread
+# Cria um dicionário para associar cada número de telefone a uma thread exclusiva
+threads_by_customer = {} # Cada chave será o 'customer_number' e o valor será o 'thread_id'
+
+
 
 # Endpoint que receb a mensagem do WhatsApp (Webhook da Twilio)
 @app.route("/whatsapp", methods=["POST"])
 def whatsapp_webhook():
     incoming_message = request.values.get('Body', '').lower() # Pega a mensagem recebida
-    from_number = request.values.get('From') # Pega o número de quem enviou a mensagem
+    customer_number = request.values.get('From') # Pega o número de quem enviou a mensagem
 
     if incoming_message:
+        # Verifica se já existe uma thread para o usuário
+        if customer_number not in threads_by_customer:
+            thread = client.beta.threads.create() # Cria uma thread
+            threads_by_customer[customer_number] = thread.id # Associa o 'thread_id' ao 'customer_number'
+
+        # Recupera o 'thread_id' associado ao 'customer_number'
+        thread_id = threads_by_customer[customer_number]
+
         # Adiciona mensagem à thread existente na OpenAI
         message = client.beta.threads.messages.create(
             thread_id=thread_id,
@@ -94,9 +103,10 @@ def whatsapp_webhook():
         # Envia a resposta para o ...
         payload = {
             'from': 'whatsapp:+55whatsapp_number', # Número de origem
-            'to': from_number, # Número de destino
+            'to': customer_number, # Número de destino
             'body': response_message # Mensagem a ser enviada
         }
+        # Faz um POST para enviar a mensagem
         response = requests.post("url_interface_whatsapp", json={"payload": payload})
 
         # Verifica o sucesso do envio
