@@ -192,7 +192,7 @@ def whatsapp_webhook():
         return 'Nenhuma mensagem recebida', 400
     
 @app.route("/messages_test", methods=["GET"])
-def messages_to_send():
+def get_messages_to_send():
       global messages_to_send
 
       print(messages_to_send)
