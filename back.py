@@ -3,7 +3,7 @@ import openai
 from dotenv import load_dotenv, find_dotenv
 import pandas as pd
 import time
-from twilio.rest import Client
+import requests
 
 app = Flask(__name__)
 
@@ -11,7 +11,6 @@ app = Flask(__name__)
 _ = load_dotenv(find_dotenv())
 
 # Cria o client da Twilio e da OpenAI
-client_twilio = Client()
 client = openai.Client()
 
 # Passa o arquivo para a openai
@@ -92,16 +91,21 @@ def whatsapp_webhook():
         else:
             response_message = f"Erro na execução: Erro: {run.status}"
 
-        # Envia a resposta de volta ao usuário via Twilio WhatsApp
-        client_twilio.messages.create(
-            body = response_message,
-            from_ = 'whatsapp:+14155238886',
-            to = from_number
-        )
+        # Envia a resposta para o ...
+        payload = {
+            'from': 'whatsapp:+55whatsapp_number', # Número de origem
+            'to': from_number, # Número de destino
+            'body': response_message # Mensagem a ser enviada
+        }
+        response = requests.post("url_interface_whatsapp", json={"payload": payload})
 
-        return 'Mensagem recebida e processada.', 200
+        # Verifica o sucesso do envio
+        if response.status_code == 200:
+            return 'Mensagem recebida e processada.', 200
+        else:
+            return 'Falha ao enviar a mensagem.', 500
     else:
-        return 'Nenhuma pergunta fornecida', 400
+        return 'Nenhuma mensagem recebida', 400
 
 if __name__ == "__main__":
     app.run(debug=True)
