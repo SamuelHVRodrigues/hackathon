@@ -194,13 +194,6 @@ def whatsapp_webhook():
 @app.route("/messages_test", methods=["GET"])
 def get_messages_to_send():
       global messages_to_send
-
-      print(messages_to_send)
-
-      if not isinstance(messages_to_send, list):  # Verifica se 'messages' ainda é uma lista
-          return jsonify(messages_to_send)
-          return "Erro: 'messages' não é uma lista", 500
-
       aux = messages_to_send
       messages_to_send = []
       return jsonify(aux)
