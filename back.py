@@ -194,7 +194,7 @@ def messages_to_send():
       global messages_to_send
       aux = messages_to_send
       messages_to_send = []
-      return jsonify(aux)
+      return aux
 
 if __name__ == "__main__":
     app.run(debug=True)
