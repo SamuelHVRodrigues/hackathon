@@ -77,41 +77,41 @@
     <script>
       const form = document.getElementById("upload-form");
 
-      form.addEventListener("submit", async (event) => {
-        event.preventDefault();
+      // form.addEventListener("submit", async (event) => {
+      //   event.preventDefault();
 
-        const fileInput = document.getElementById("file-upload");
-        const file = fileInput.files[0];
+      //   const fileInput = document.getElementById("file-upload");
+      //   const file = fileInput.files[0];
 
-        if (!file) {
-          alert("Por favor, selecione um arquivo para enviar.");
-          return;
-        }
+      //   if (!file) {
+      //     alert("Por favor, selecione um arquivo para enviar.");
+      //     return;
+      //   }
 
-        const formData = new FormData();
-        formData.append("file", file);
+      //   const formData = new FormData();
+      //   formData.append("file", file);
 
-        alert('Tá chegando')
+      //   alert('Tá chegando')
 
-        try {
-          const response = await fetch("/upload_customers", {
-            method: "POST",
-            body: formData,
-          });
+      //   try {
+      //     const response = await fetch("/upload_customers", {
+      //       method: "POST",
+      //       body: formData,
+      //     });
 
-          if (response.ok) {
-            const result = await response.json();
-            console.log("Arquivo enviado com sucesso:", result);
-            alert("Arquivo enviado com sucesso!");
-          } else {
-            console.error("Erro ao enviar o arquivo:", response.statusText);
-            alert("Erro ao enviar o arquivo. Tente novamente.");
-          }
-        } catch (error) {
-          console.error("Erro:", error);
-          alert("Ocorreu um erro. Tente novamente.");
-        }
-      });
+      //     if (response.ok) {
+      //       const result = await response.json();
+      //       console.log("Arquivo enviado com sucesso:", result);
+      //       alert("Arquivo enviado com sucesso!");
+      //     } else {
+      //       console.error("Erro ao enviar o arquivo:", response.statusText);
+      //       alert("Erro ao enviar o arquivo. Tente novamente.");
+      //     }
+      //   } catch (error) {
+      //     console.error("Erro:", error);
+      //     alert("Ocorreu um erro. Tente novamente.");
+      //   }
+      // });
     </script>
   </body>
 </html>
