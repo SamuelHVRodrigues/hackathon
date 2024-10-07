@@ -48,6 +48,10 @@ def whatsapp_webhook():
     incoming_message = request.values.get('Body', '').lower() # Pega a mensagem recebida
     customer_number = request.values.get('From') # Pega o número de quem enviou a mensagem
 
+    print(request.values)
+    print('------#------')
+    print(incoming_message)
+
     if incoming_message:
         # Verifica se já existe uma thread para o usuário
         if customer_number not in threads_by_customer:
