@@ -7,7 +7,7 @@ import requests
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=['http://15.228.13.32:3333', 'http://15.228.13.32:3333/'])
 
 # Carregar variáveis de ambiente
 _ = load_dotenv(find_dotenv())
