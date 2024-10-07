@@ -114,7 +114,8 @@ def whatsapp_webhook():
             'body': response_message # Mensagem a ser enviada
         }
         # Faz um POST para enviar a mensagem
-        response = requests.post("url_interface_whatsapp", json={"payload": payload})
+        return payload
+        # response = requests.post("url_interface_whatsapp", json={"payload": payload})
 
         # Verifica o sucesso do envio
         if response.status_code == 200:
