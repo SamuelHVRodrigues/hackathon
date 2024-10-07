@@ -121,7 +121,7 @@ def whatsapp_webhook():
 @app.route('/', methods=["GET"])
 def load_index():
     # Carrega o arquivo 'index.html'
-    return send_from_directory('index.html')
+    return send_from_directory('', 'index.html')
 
 
 if __name__ == "__main__":
