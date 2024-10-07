@@ -84,14 +84,14 @@
         const file = fileInput.files[0];
 
         if (!file) {
-          alert("Por favor, selecione um arquivo para enviar. v2");
+          alert("Por favor, selecione um arquivo para enviar.");
           return;
         }
 
         const formData = new FormData();
         formData.append("file", file);
 
-        alert('Tá chegando')
+        alert('Tá chegando v2')
 
         try {
           const response = await fetch("/upload_customers", {
