@@ -43,14 +43,17 @@ threads_by_customer = {} # Cada chave será o 'customer_number' e o valor será 
 
 
 # Endpoint que receb a mensagem do WhatsApp (Webhook da Twilio)
-@app.route("/whatsapp", methods=["POST"])
+@app.route("/whatsapp", methods=["GET", "POST"])
 def whatsapp_webhook():
-    incoming_message = request.values.get('Body', '').lower() # Pega a mensagem recebida
-    customer_number = request.values.get('From') # Pega o número de quem enviou a mensagem
+    json = request.get_json()
+    print(json)
 
-    print(request.values)
-    print('------#------')
+    incoming_message = json['Body'] # Pega o número de quem enviou a mensagem
+    print('------incoming_message------')
     print(incoming_message)
+    customer_number = json['From'] # Pega o número de quem enviou a mensagem
+    print('------customer number------')
+    print(customer_number)
 
     if incoming_message:
         # Verifica se já existe uma thread para o usuário
@@ -129,4 +132,4 @@ def load_index():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(port=8080, debug=True)
